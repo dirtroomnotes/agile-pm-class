@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>agilepm.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+agilepm.py</font>
+</center></td></tr></table>
+<pre><span class="s0"># The room data for the Agile PM Adventure Game.</span>
+<span class="s0"># Goal: Collect 6 artifacts and enter the Cove of Chaos.</span>
+<span class="s1">rooms </span><span class="s2">= {</span>
+    <span class="s3">'War Room'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;Maps, charts, and sticky notes cover every surface; this is the nerve center of planning.&quot;</span><span class="s2">,</span>
+        <span class="s3">'exits'</span><span class="s2">: {</span><span class="s3">'north'</span><span class="s2">: </span><span class="s3">'Blueprint Chamber'</span><span class="s2">, </span><span class="s3">'south'</span><span class="s2">: </span><span class="s3">'Lab of Trials'</span><span class="s2">, </span><span class="s3">'east'</span><span class="s2">: </span><span class="s3">'Vault of Archives'</span><span class="s2">,</span>
+                  <span class="s3">'west'</span><span class="s2">: </span><span class="s3">'Scrolls of Requirements'</span><span class="s2">},</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s3">'Burndown Scroll'</span>
+    <span class="s2">},</span>
+    <span class="s3">'Blueprint Chamber'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;Blueprints and diagrams cover every surface. You hear someone mumbling about sprint velocity.&quot;</span><span class="s2">,</span>
+        <span class="s3">'exits'</span><span class="s2">: {</span><span class="s3">'south'</span><span class="s2">: </span><span class="s3">'War Room'</span><span class="s2">, </span><span class="s3">'west'</span><span class="s2">: </span><span class="s3">'Stakeholder Summit'</span><span class="s2">},</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s3">'Kanban Card'</span>
+    <span class="s2">},</span>
+    <span class="s3">'Stakeholder Summit'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;Executives debate priorities loudly. Scope creep lurks in the air.&quot;</span><span class="s2">,</span>
+        <span class="s3">'exits'</span><span class="s2">: {</span><span class="s3">'south'</span><span class="s2">: </span><span class="s3">'Scrolls of Requirements'</span><span class="s2">, </span><span class="s3">'east'</span><span class="s2">: </span><span class="s3">'Blueprint Chamber'</span><span class="s2">},</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s3">'Artifact of Planning'</span>
+    <span class="s2">},</span>
+    <span class="s3">'Scrolls of Requirements'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;Ancient scrolls line the walls. Each requirement glows faintly — maybe too many of them.&quot;</span><span class="s2">,</span>
+        <span class="s0"># Added 'south' exit back to Lab of Trials for complete pathing.</span>
+        <span class="s3">'exits'</span><span class="s2">: {</span><span class="s3">'north'</span><span class="s2">: </span><span class="s3">'Stakeholder Summit'</span><span class="s2">, </span><span class="s3">'east'</span><span class="s2">: </span><span class="s3">'Vault of Archives'</span><span class="s2">, </span><span class="s3">'south'</span><span class="s2">: </span><span class="s3">'Lab of Trials'</span><span class="s2">},</span>
+        <span class="s0"># Added the User Story Sheet artifact back here to ensure 6 total artifacts.</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s3">'User Story Sheet'</span>
+    <span class="s2">},</span>
+    <span class="s3">'Vault of Archives'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;Rows of glowing tablets record project retrospectives. There’s wisdom and warnings here.&quot;</span><span class="s2">,</span>
+        <span class="s3">'exits'</span><span class="s2">: {</span><span class="s3">'south'</span><span class="s2">: </span><span class="s3">'Retrospective Hall'</span><span class="s2">, </span><span class="s3">'west'</span><span class="s2">: </span><span class="s3">'Scrolls of Requirements'</span><span class="s2">},</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s3">'Test Plan Codex'</span>
+    <span class="s2">},</span>
+    <span class="s3">'Retrospective Hall'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;Sticky notes of lessons learned line the walls. You feel reflective and oddly motivated.&quot;</span><span class="s2">,</span>
+        <span class="s3">'exits'</span><span class="s2">: {</span><span class="s3">'north'</span><span class="s2">: </span><span class="s3">'Vault of Archives'</span><span class="s2">, </span><span class="s3">'south'</span><span class="s2">: </span><span class="s3">'Cove of Chaos'</span><span class="s2">},</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s3">'Sprint Trophy'</span>
+    <span class="s2">},</span>
+    <span class="s3">'Lab of Trials'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;Prototypes, experiments, and strange gadgets hum with energy. You feel like a mad scientist.&quot;</span><span class="s2">,</span>
+        <span class="s0"># Added 'west' exit back to Scrolls and the requested 'east' exit to Cove of Chaos.</span>
+        <span class="s3">'exits'</span><span class="s2">: {</span><span class="s3">'north'</span><span class="s2">: </span><span class="s3">'War Room'</span><span class="s2">, </span><span class="s3">'west'</span><span class="s2">: </span><span class="s3">'Scrolls of Requirements'</span><span class="s2">, </span><span class="s3">'east'</span><span class="s2">: </span><span class="s3">'Cove of Chaos'</span><span class="s2">},</span>
+        <span class="s0"># Removed artifact to ensure only 6 total artifacts exist across all rooms.</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s4">None</span>
+    <span class="s2">},</span>
+    <span class="s3">'Cove of Chaos'</span><span class="s2">: {</span>
+        <span class="s3">'description'</span><span class="s2">: </span><span class="s3">&quot;The Chaos Imp awaits! Only if you have all artifacts can you succeed.&quot;</span><span class="s2">,</span>
+        <span class="s3">'exits'</span><span class="s2">: {},</span>
+        <span class="s3">'artifact'</span><span class="s2">: </span><span class="s4">None</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+
+<span class="s4">def </span><span class="s1">print_room_status</span><span class="s2">(</span><span class="s1">current_room</span><span class="s2">, </span><span class="s1">inventory</span><span class="s2">, </span><span class="s1">collected_artifacts</span><span class="s2">, </span><span class="s1">visited_rooms</span><span class="s2">):</span>
+    <span class="s5">&quot;&quot;&quot;Prints the current room description, inventory, and available exits.&quot;&quot;&quot;</span>
+    <span class="s1">room </span><span class="s2">= </span><span class="s1">rooms</span><span class="s2">[</span><span class="s1">current_room</span><span class="s2">]</span>
+    <span class="s0"># Filter only uncollected artifacts for hints</span>
+    <span class="s1">remaining_artifacts </span><span class="s2">= [</span><span class="s1">rooms</span><span class="s2">[</span><span class="s1">r</span><span class="s2">][</span><span class="s3">'artifact'</span><span class="s2">] </span><span class="s4">for </span><span class="s1">r </span><span class="s4">in </span><span class="s1">rooms</span><span class="s2">.</span><span class="s1">keys</span><span class="s2">()</span>
+                           <span class="s4">if </span><span class="s1">rooms</span><span class="s2">[</span><span class="s1">r</span><span class="s2">][</span><span class="s3">'artifact'</span><span class="s2">] </span><span class="s4">and </span><span class="s1">rooms</span><span class="s2">[</span><span class="s1">r</span><span class="s2">][</span><span class="s3">'artifact'</span><span class="s2">] </span><span class="s4">not in </span><span class="s1">collected_artifacts</span><span class="s2">]</span>
+
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">&quot; </span><span class="s2">+ </span><span class="s3">&quot;=&quot; </span><span class="s2">* </span><span class="s6">55</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">f&quot;🏛️  Current Room: </span><span class="s4">{</span><span class="s1">current_room</span><span class="s4">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s1">room</span><span class="s2">[</span><span class="s3">'description'</span><span class="s2">])</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">f&quot;</span><span class="s4">\n</span><span class="s3">📦 Artifacts Collected: </span><span class="s4">{</span><span class="s1">len</span><span class="s2">(</span><span class="s1">collected_artifacts</span><span class="s2">)</span><span class="s4">}</span><span class="s3">/6&quot;</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">f&quot;   Inventory: </span><span class="s4">{</span><span class="s3">', '</span><span class="s2">.</span><span class="s1">join</span><span class="s2">(</span><span class="s1">inventory</span><span class="s2">) </span><span class="s4">if </span><span class="s1">inventory </span><span class="s4">else </span><span class="s3">'Empty'</span><span class="s4">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+    <span class="s4">if </span><span class="s1">room</span><span class="s2">[</span><span class="s3">'artifact'</span><span class="s2">] </span><span class="s4">and </span><span class="s1">room</span><span class="s2">[</span><span class="s3">'artifact'</span><span class="s2">] </span><span class="s4">not in </span><span class="s1">collected_artifacts</span><span class="s2">:</span>
+        <span class="s1">print</span><span class="s2">(</span><span class="s3">f&quot;✨ You sense an artifact here: </span><span class="s4">{</span><span class="s1">room</span><span class="s2">[</span><span class="s3">'artifact'</span><span class="s2">]</span><span class="s4">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">🚪 Possible directions:&quot;</span><span class="s2">)</span>
+    <span class="s4">if </span><span class="s1">room</span><span class="s2">[</span><span class="s3">'exits'</span><span class="s2">]:</span>
+        <span class="s4">for </span><span class="s1">direction</span><span class="s2">, </span><span class="s1">dest </span><span class="s4">in </span><span class="s1">room</span><span class="s2">[</span><span class="s3">'exits'</span><span class="s2">].</span><span class="s1">items</span><span class="s2">():</span>
+            <span class="s1">print</span><span class="s2">(</span><span class="s3">f&quot;- </span><span class="s4">{</span><span class="s1">direction</span><span class="s2">.</span><span class="s1">capitalize</span><span class="s2">()</span><span class="s4">} </span><span class="s3">→ </span><span class="s4">{</span><span class="s1">dest</span><span class="s4">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+    <span class="s4">else</span><span class="s2">:</span>
+        <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;There are no clear exits from this room.&quot;</span><span class="s2">)</span>
+
+    <span class="s4">if </span><span class="s1">remaining_artifacts</span><span class="s2">:</span>
+        <span class="s1">print</span><span class="s2">(</span><span class="s3">f&quot;</span><span class="s4">\n</span><span class="s3">💡 Artifacts still needed: </span><span class="s4">{</span><span class="s3">', '</span><span class="s2">.</span><span class="s1">join</span><span class="s2">(</span><span class="s1">remaining_artifacts</span><span class="s2">)</span><span class="s4">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;=&quot; </span><span class="s2">* </span><span class="s6">55</span><span class="s2">)</span>
+
+
+<span class="s4">def </span><span class="s1">game</span><span class="s2">():</span>
+    <span class="s5">&quot;&quot;&quot;Main game loop and logic.&quot;&quot;&quot;</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;🏗️ Welcome to the Agile PM Adventure Game!&quot;</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;Your mission: collect all 6 project artifacts before meeting the Chaos Imp.</span><span class="s4">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;Commands:</span><span class="s4">\n</span><span class="s3">👉 Move: go North | go South | go East | go West (or just type direction)&quot;</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;👉 Quit: quit anytime to exit&quot;</span><span class="s2">)</span>
+    <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;-&quot; </span><span class="s2">* </span><span class="s6">55</span><span class="s2">)</span>
+
+    <span class="s1">current_room </span><span class="s2">= </span><span class="s3">'War Room'</span>
+    <span class="s1">inventory </span><span class="s2">= []</span>
+    <span class="s1">collected_artifacts </span><span class="s2">= []</span>
+    <span class="s1">visited_rooms </span><span class="s2">= </span><span class="s1">set</span><span class="s2">([</span><span class="s3">'War Room'</span><span class="s2">])  </span><span class="s0"># Track visited rooms (currently not used for display but good for game state)</span>
+    <span class="s1">TOTAL_ARTIFACTS </span><span class="s2">= </span><span class="s6">6</span>
+
+    <span class="s4">while True</span><span class="s2">:</span>
+        <span class="s1">print_room_status</span><span class="s2">(</span><span class="s1">current_room</span><span class="s2">, </span><span class="s1">inventory</span><span class="s2">, </span><span class="s1">collected_artifacts</span><span class="s2">, </span><span class="s1">visited_rooms</span><span class="s2">)</span>
+
+        <span class="s0"># Automatically collect artifact upon entering/being in a room</span>
+        <span class="s1">room_artifact </span><span class="s2">= </span><span class="s1">rooms</span><span class="s2">[</span><span class="s1">current_room</span><span class="s2">][</span><span class="s3">'artifact'</span><span class="s2">]</span>
+        <span class="s4">if </span><span class="s1">room_artifact </span><span class="s4">and </span><span class="s1">room_artifact </span><span class="s4">not in </span><span class="s1">collected_artifacts</span><span class="s2">:</span>
+            <span class="s1">collected_artifacts</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">room_artifact</span><span class="s2">)</span>
+            <span class="s1">inventory</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">room_artifact</span><span class="s2">)</span>
+            <span class="s1">print</span><span class="s2">(</span>
+                <span class="s3">f&quot;</span><span class="s4">\n</span><span class="s3">🪄 You obtained: </span><span class="s4">{</span><span class="s1">room_artifact</span><span class="s4">}</span><span class="s3">! (</span><span class="s4">{</span><span class="s1">len</span><span class="s2">(</span><span class="s1">collected_artifacts</span><span class="s2">)</span><span class="s4">}</span><span class="s3">/</span><span class="s4">{</span><span class="s1">TOTAL_ARTIFACTS</span><span class="s4">} </span><span class="s3">artifacts collected)&quot;</span><span class="s2">)</span>
+
+        <span class="s0"># Handle win/lose condition upon entering Cove of Chaos</span>
+        <span class="s4">if </span><span class="s1">current_room </span><span class="s2">== </span><span class="s3">'Cove of Chaos'</span><span class="s2">:</span>
+            <span class="s4">if </span><span class="s1">len</span><span class="s2">(</span><span class="s1">collected_artifacts</span><span class="s2">) == </span><span class="s1">TOTAL_ARTIFACTS</span><span class="s2">:</span>
+                <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">🎉 You faced the Chaos Imp fully prepared and triumphed! YOU WIN!&quot;</span><span class="s2">)</span>
+            <span class="s4">else</span><span class="s2">:</span>
+                <span class="s1">print</span><span class="s2">(</span>
+                    <span class="s3">f&quot;</span><span class="s4">\n</span><span class="s3">💀 You faced the Chaos Imp unprepared with only </span><span class="s4">{</span><span class="s1">len</span><span class="s2">(</span><span class="s1">collected_artifacts</span><span class="s2">)</span><span class="s4">}</span><span class="s3">/</span><span class="s4">{</span><span class="s1">TOTAL_ARTIFACTS</span><span class="s4">} </span><span class="s3">artifacts... GAME OVER!&quot;</span><span class="s2">)</span>
+            <span class="s4">break</span>
+
+        <span class="s1">move </span><span class="s2">= </span><span class="s1">input</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">Enter your move: &quot;</span><span class="s2">).</span><span class="s1">strip</span><span class="s2">().</span><span class="s1">lower</span><span class="s2">()</span>
+        <span class="s4">if </span><span class="s1">move </span><span class="s2">== </span><span class="s3">'quit'</span><span class="s2">:</span>
+            <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;Exiting the game. Goodbye!&quot;</span><span class="s2">)</span>
+            <span class="s4">break</span>
+
+        <span class="s0"># Normalize move</span>
+        <span class="s4">if </span><span class="s1">move</span><span class="s2">.</span><span class="s1">startswith</span><span class="s2">(</span><span class="s3">&quot;go &quot;</span><span class="s2">):</span>
+            <span class="s1">move </span><span class="s2">= </span><span class="s1">move</span><span class="s2">[</span><span class="s6">3</span><span class="s2">:]</span>
+
+        <span class="s0"># Check if the move is a valid exit</span>
+        <span class="s4">if </span><span class="s1">move </span><span class="s4">in </span><span class="s1">rooms</span><span class="s2">[</span><span class="s1">current_room</span><span class="s2">][</span><span class="s3">'exits'</span><span class="s2">]:</span>
+            <span class="s1">current_room </span><span class="s2">= </span><span class="s1">rooms</span><span class="s2">[</span><span class="s1">current_room</span><span class="s2">][</span><span class="s3">'exits'</span><span class="s2">][</span><span class="s1">move</span><span class="s2">]</span>
+            <span class="s1">visited_rooms</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">current_room</span><span class="s2">)</span>
+        <span class="s4">else</span><span class="s2">:</span>
+            <span class="s1">print</span><span class="s2">(</span><span class="s3">&quot;❌ Invalid move. Try another direction (North, South, East, West).&quot;</span><span class="s2">)</span>
+
+
+<span class="s4">if </span><span class="s1">__name__ </span><span class="s2">== </span><span class="s3">&quot;__main__&quot;</span><span class="s2">:</span>
+    <span class="s1">game</span><span class="s2">()</span></pre>
+</body>
+</html>

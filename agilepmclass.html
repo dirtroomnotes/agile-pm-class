@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agile PM Adventure Game</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General High-Tech Blueprint Aesthetic */
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #0F172A; /* Slate 900 */
+            color: #E0F2F1; /* Teal 50 for text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 960px; /* Max width for a clean console look */
+            background-color: #1E293B; /* Slate 800 */
+            border: 4px solid #06B6D4; /* Cyan accent border */
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.5); /* Neon glow effect */
+            border-radius: 1rem;
+            display: grid;
+            grid-template-rows: auto 1fr auto; /* Header, Main Content, Footer */
+            min-height: 80vh;
+        }
+
+        .terminal-output {
+            background-color: #0F172A; /* Console background */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px dashed #475569; /* Slate 600 */
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Styling for the Map/Blueprint */
+        .blueprint-map {
+            position: relative;
+            background-color: #0F172A;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #06B6D4;
+        }
+
+        .room-node {
+            transition: all 0.3s ease;
+            cursor: default;
+            font-weight: bold;
+            text-align: center;
+            padding: 0.5rem 0.25rem;
+            border-radius: 0.375rem;
+            background-color: #334155; /* Slate 700 */
+            color: #94A3B8; /* Slate 400 */
+            border: 1px solid transparent;
+            font-size: 0.75rem; /* Small font for grid */
+        }
+
+        .current-room {
+            background-color: #06B6D4; /* Cyan 500 */
+            color: #0F172A; /* Dark text */
+            border: 1px solid #E0F2F1;
+            box-shadow: 0 0 10px #06B6D4;
+        }
+
+        .artifact-present {
+            border: 2px solid #F97316; /* Orange 500 */
+            color: #F97316;
+        }
+
+        /* Buttons Styling */
+        .game-button {
+            padding: 0.75rem 1.5rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            background-color: #06B6D4; /* Base Cyan */
+            color: #0F172A; /* Dark text on button */
+            box-shadow: 0 4px #0891B2; /* Darker cyan shadow */
+            transform: translateY(0);
+        }
+
+        .game-button:hover {
+            background-color: #0E7490; /* Darker Cyan 600 */
+            box-shadow: 0 2px #0891B2;
+            transform: translateY(2px);
+        }
+
+        .game-button:disabled {
+            background-color: #475569;
+            color: #64748B;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Custom Modal for Win/Lose */
+        .game-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container" class="game-container">
+        <header class="p-6 text-center border-b border-cyan-600">
+            <h1 class="text-3xl font-bold text-cyan-400">Agile PM Adventure</h1>
+            <p class="text-sm text-gray-400">Collect all 6 artifacts and conquer the Chaos Imp!</p>
+        </header>
+
+        <main class="p-6">
+            <div class="lg:grid lg:grid-cols-3 lg:gap-6">
+                <!-- Status/Inventory Panel -->
+                <div class="lg:col-span-1 mb-6 lg:mb-0">
+                    <h2 class="text-xl font-bold mb-3 text-cyan-400">STATUS</h2>
+                    <div id="status-panel" class="p-4 bg-gray-700 rounded-lg shadow-xl text-sm space-y-3">
+                        <div class="flex justify-between border-b border-gray-600 pb-2">
+                            <span>Artifacts:</span>
+                            <span id="artifact-count" class="font-bold text-orange-400">0 / 6</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-300">Inventory:</span>
+                            <div id="inventory-display" class="mt-1 text-teal-200 italic">Empty</div>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-300">Rooms Visited:</span>
+                            <div id="visited-rooms-display" class="mt-1 text-gray-400 italic">War Room</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Terminal Output & Map -->
+                <div class="lg:col-span-2">
+                    <h2 class="text-xl font-bold mb-3 text-cyan-400">CONSOLE LOG</h2>
+                    <div id="terminal-output" class="terminal-output">
+                        <p>🏗️ Welcome to the Agile PM Adventure Game!</p>
+                        <p>Your mission: collect all 6 project artifacts before meeting the Chaos Imp.</p>
+                        <p class="mt-4 text-orange-400">-- STARTING IN WAR ROOM --</p>
+                    </div>
+
+                    <h2 class="text-xl font-bold mb-3 text-cyan-400 mt-6">PROJECT BLUEPRINT</h2>
+                    <!-- Visual Map Placeholder (Simplified Grid Representation) -->
+                    <div id="blueprint-map" class="blueprint-map grid grid-cols-3 gap-3">
+                        <!-- Map nodes will be inserted here by JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Controls/Footer -->
+        <footer class="p-6 border-t border-cyan-600 flex flex-col items-center">
+            <h2 class="text-xl font-bold mb-4 text-cyan-400">NAVIGATION</h2>
+            <div id="controls" class="grid grid-cols-3 gap-4 w-full max-w-sm">
+                <button id="move-west" data-direction="West" class="col-start-1 bg-cyan-500 text-gray-900 game-button">← West</button>
+                <button id="move-north" data-direction="North" class="col-start-2 bg-cyan-500 text-gray-900 game-button">↑ North</button>
+                <button id="move-east" data-direction="East" class="col-start-3 bg-cyan-500 text-gray-900 game-button">East →</button>
+                <div class="col-start-2"></div> <!-- Spacer -->
+                <button id="move-south" data-direction="South" class="col-start-2 bg-cyan-500 text-gray-900 game-button">↓ South</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Game End Modal (Hidden by Default) -->
+    <div id="game-modal" class="game-modal hidden">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl border-4 border-cyan-500 max-w-md w-full text-center">
+            <h3 id="modal-heading" class="text-4xl font-extrabold mb-4 text-cyan-400">Game Over!</h3>
+            <p id="modal-message" class="text-xl mb-6 text-gray-300">You ran out of time!</p>
+            <button onclick="window.location.reload()" class="bg-orange-500 text-gray-900 px-8 py-3 rounded-full text-lg font-bold shadow-lg hover:bg-orange-400 transition-colors">Restart Project</button>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME DATA: Matches the final Game Design Document (GDD) ---
+        const ROOMS = {
+            'War Room': {
+                'description': 'Maps, charts, and sticky notes cover every surface; this is the nerve center of planning.',
+                'exits': {'North': 'Blueprint Chamber', 'South': 'Lab of Trials', 'East': 'Vault of Archives', 'West': 'Scrolls of Requirements'},
+                'item': 'Burndown Scroll'
+            },
+            'Blueprint Chamber': {
+                'description': 'Blueprints and diagrams cover every surface. You hear someone mumbling about sprint velocity.',
+                'exits': {'South': 'War Room', 'West': 'Stakeholder Summit'},
+                'item': 'Kanban Card'
+            },
+            'Stakeholder Summit': {
+                'description': 'Executives debate priorities loudly. Scope creep lurks in the air.',
+                'exits': {'South': 'Scrolls of Requirements', 'East': 'Blueprint Chamber'},
+                'item': 'Artifact of Planning'
+            },
+            'Scrolls of Requirements': {
+                'description': 'Ancient scrolls line the walls. Each requirement glows faintly — maybe too many of them.',
+                // GDD Update: Added South to Lab of Trials
+                'exits': {'North': 'Stakeholder Summit', 'East': 'Vault of Archives', 'South': 'Lab of Trials'},
+                'item': 'User Story Sheet' 
+            },
+            'Vault of Archives': {
+                'description': 'Rows of glowing tablets record project retrospectives. There’s wisdom and warnings here.',
+                'exits': {'South': 'Retrospective Hall', 'West': 'Scrolls of Requirements'},
+                'item': 'Test Plan Codex'
+            },
+            'Retrospective Hall': {
+                'description': 'Sticky notes of lessons learned line the walls. You feel reflective and oddly motivated.',
+                'exits': {'North': 'Vault of Archives', 'South': 'Cove of Chaos'},
+                'item': 'Sprint Trophy'
+            },
+            'Lab of Trials': {
+                'description': 'Prototypes, experiments, and strange gadgets hum with energy. You feel like a mad scientist.',
+                // GDD Update: Added West to Scrolls and East directly to Cove of Chaos
+                'exits': {'North': 'War Room', 'West': 'Scrolls of Requirements', 'East': 'Cove of Chaos'}, 
+                // GDD Update: Item explicitly set to null (6 total artifacts)
+                'item': null 
+            },
+            'Cove of Chaos': {
+                'description': 'The Chaos Imp awaits! Only if you have all artifacts can you succeed.',
+                'exits': {},
+                'item': null 
+            }
+        };
+
+        const TOTAL_ARTIFACTS = 6;
+        let gameState = {
+            currentRoom: 'War Room',
+            inventory: [],
+            visitedRooms: new Set(['War Room']),
+            gameActive: true
+        };
+
+        // --- DOM Elements ---
+        const terminalOutput = document.getElementById('terminal-output');
+        const artifactCountDisplay = document.getElementById('artifact-count');
+        const inventoryDisplay = document.getElementById('inventory-display');
+        const visitedRoomsDisplay = document.getElementById('visited-rooms-display');
+        const moveButtons = document.querySelectorAll('#controls button');
+        const blueprintMap = document.getElementById('blueprint-map');
+        const gameModal = document.getElementById('game-modal');
+        const modalHeading = document.getElementById('modal-heading');
+        const modalMessage = document.getElementById('modal-message');
+
+        // --- Game Functions ---
+
+        /** Logs a message to the terminal output. */
+        function log(message, isImportant = false) {
+            const p = document.createElement('p');
+            p.innerHTML = message;
+            if (isImportant) {
+                p.className = 'text-cyan-300 font-bold mt-2';
+            }
+            terminalOutput.appendChild(p);
+            // Auto-scroll to the bottom
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        /** Checks if an item exists in the current room and attempts to collect it. */
+        function checkItem() {
+            const room = ROOMS[gameState.currentRoom];
+            if (room.item && !gameState.inventory.includes(room.item)) {
+                gameState.inventory.push(room.item);
+                log(`🪄 Artifact Obtained: <span class="text-orange-400">${room.item}</span>! (${gameState.inventory.length}/${TOTAL_ARTIFACTS} collected)`, true);
+            }
+        }
+
+        /** Updates all UI elements with the current game state. */
+        function updateUI() {
+            const room = ROOMS[gameState.currentRoom];
+
+            // 1. Update Terminal/Description
+            log(`\n=======================================================`);
+            log(`🏛️  You are now in the <span class="text-cyan-400">${gameState.currentRoom}</span>.`);
+            log(`> ${room.description}`);
+            log(`=======================================================`);
+
+            // 2. Update Status Panel
+            artifactCountDisplay.textContent = `${gameState.inventory.length} / ${TOTAL_ARTIFACTS}`;
+            inventoryDisplay.innerHTML = gameState.inventory.length > 0
+                ? gameState.inventory.map(item => `<span class="bg-gray-600 px-2 py-0.5 rounded-full text-xs">${item}</span>`).join(' ')
+                : 'Empty';
+            visitedRoomsDisplay.textContent = Array.from(gameState.visitedRooms).join(', ');
+
+            // 3. Update Controls (Enable/Disable buttons)
+            moveButtons.forEach(button => {
+                const direction = button.dataset.direction;
+                const isExit = room.exits.hasOwnProperty(direction);
+                button.disabled = !isExit;
+            });
+
+            // 4. Update Blueprint Map
+            updateBlueprint();
+        }
+
+        /** Renders the map with room statuses. */
+        function updateBlueprint() {
+            // Simplified grid layout for visualization
+            const mapOrder = [
+                'Stakeholder Summit', 'Blueprint Chamber', 'Vault of Archives',
+                'Scrolls of Requirements', 'War Room', 'Retrospective Hall',
+                'Lab of Trials', 'Cove of Chaos', null 
+            ];
+
+            blueprintMap.innerHTML = '';
+            blueprintMap.style.gridTemplateColumns = 'repeat(3, 1fr)';
+
+            mapOrder.forEach(roomName => {
+                const node = document.createElement('div');
+                node.className = 'room-node';
+
+                if (roomName) {
+                    node.id = `room-${roomName.replace(/\s/g, '-')}`;
+                    node.textContent = roomName;
+
+                    if (roomName === gameState.currentRoom) {
+                        node.classList.add('current-room');
+                    }
+
+                    const roomData = ROOMS[roomName];
+                    // Check if the room has an uncollected artifact
+                    if (roomData.item && !gameState.inventory.includes(roomData.item)) {
+                        node.classList.add('artifact-present');
+                        node.textContent = `✨ ${roomName} (Item)`;
+                    } else if (roomData.item && gameState.inventory.includes(roomData.item)) {
+                        node.textContent = `✅ ${roomName}`;
+                        node.classList.remove('artifact-present');
+                    } else if (roomName === 'Cove of Chaos') {
+                        node.textContent = `🔥 ${roomName}`;
+                    }
+
+                    blueprintMap.appendChild(node);
+                } else {
+                    // Empty spacer cell
+                    node.className = 'bg-transparent';
+                    blueprintMap.appendChild(node);
+                }
+            });
+        }
+
+
+        /** Handles player movement and updates the state. */
+        function handleMove(direction) {
+            if (!gameState.gameActive) return;
+
+            const newRoomName = ROOMS[gameState.currentRoom].exits[direction];
+
+            if (newRoomName) {
+                gameState.currentRoom = newRoomName;
+                gameState.visitedRooms.add(newRoomName);
+
+                if (newRoomName === 'Cove of Chaos') {
+                    checkWinCondition();
+                } else {
+                    checkItem();
+                    updateUI();
+                }
+            } else {
+                log("🚫 You can't go that way! The path is blocked.");
+            }
+        }
+
+        /** Checks the win/loss condition upon entering the Cove of Chaos. */
+        function checkWinCondition() {
+            gameState.gameActive = false; // End the game regardless of outcome
+
+            if (gameState.inventory.length === TOTAL_ARTIFACTS) {
+                // WIN condition
+                gameModal.querySelector('.border-4').classList.remove('border-red-500');
+                gameModal.querySelector('.border-4').classList.add('border-green-500');
+                modalHeading.textContent = "🏆 VICTORY!";
+                modalMessage.innerHTML = 'You faced the Chaos Imp fully prepared with all <span class="font-bold text-green-400">6 artifacts</span> and triumphed! You secured the project!';
+            } else {
+                // LOSS condition
+                gameModal.querySelector('.border-4').classList.remove('border-cyan-500');
+                gameModal.querySelector('.border-4').classList.add('border-red-500');
+                modalHeading.textContent = "💀 DEFEAT!";
+                modalMessage.innerHTML = `The Chaos Imp was too strong! You only had <span class="font-bold text-red-400">${gameState.inventory.length} artifacts</span>. GAME OVER: You were not prepared for chaos!`;
+            }
+
+            gameModal.classList.remove('hidden');
+        }
+
+        // --- Initialization ---
+
+        function init() {
+            // Attach event listeners to movement buttons
+            moveButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    handleMove(e.currentTarget.dataset.direction);
+                });
+            });
+
+            // Initial game state setup
+            checkItem(); // Check for item in starting room (War Room)
+            updateUI();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
